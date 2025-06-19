@@ -1,143 +1,148 @@
 local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/ataturk123/GardenSpawner/refs/heads/main/Spawner.lua"))()
 
--- Destroy default UI
 pcall(function()
-    game.CoreGui:FindFirstChild("DarkSpawner"):Destroy()
+    game.CoreGui:FindFirstChild("g3zmarSpawner"):Destroy()
 end)
 
--- UI Library
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "g3zmarSpawner"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game:GetService("CoreGui")
+local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+gui.Name = "g3zmarSpawner"
+gui.ResetOnSpawn = false
 
--- Main Frame
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 420, 0, 300)
-MainFrame.Position = UDim2.new(0.5, -210, 0.5, -150)
-MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
-MainFrame.BackgroundTransparency = 0.1
-MainFrame.BorderSizePixel = 0
-MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.Parent = ScreenGui
+-- Draggable Main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 460, 0, 310)
+frame.Position = UDim2.new(0.5, -230, 0.5, -155)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 60)
+frame.BackgroundTransparency = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
 
--- UICorner for rounded edges
-local Corner = Instance.new("UICorner", MainFrame)
-Corner.CornerRadius = UDim.new(0, 12)
+local uicorner = Instance.new("UICorner", frame)
+uicorner.CornerRadius = UDim.new(0, 12)
 
--- Title
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundTransparency = 1
-Title.Text = "g3zmar OP Script Spawner"
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 22
-Title.TextColor3 = Color3.fromRGB(135, 206, 250)
-Title.Parent = MainFrame
+-- Title Bar
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "g3zmar OP Script Spawner"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.TextColor3 = Color3.fromRGB(140, 255, 255)
 
--- Tab Buttons: Pet / Seed / Egg
+-- Tabs
 local tabNames = {"Pet", "Seed", "Egg"}
 local currentTab = "Pet"
 local tabs = {}
 
-for i, name in ipairs(tabNames) do
-    local Button = Instance.new("TextButton")
-    Button.Size = UDim2.new(0, 120, 0, 30)
-    Button.Position = UDim2.new(0, 10 + (i - 1) * 130, 0, 50)
-    Button.BackgroundColor3 = Color3.fromRGB(70, 70, 110)
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.Font = Enum.Font.GothamSemibold
-    Button.Text = name .. " Spawner"
-    Button.Name = name
-    Button.Parent = MainFrame
-    tabs[name] = Button
+local function createTab(name, index)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0, 120, 0, 30)
+	btn.Position = UDim2.new(0, 20 + ((index - 1) * 140), 0, 45)
+	btn.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.GothamSemibold
+	btn.Text = name
+	btn.Name = name
+	btn.Parent = frame
+	btn.AutoButtonColor = true
 
-    Button.MouseButton1Click:Connect(function()
-        currentTab = name
-        updateVisibility()
-    end)
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 6)
+
+	btn.MouseButton1Click:Connect(function()
+		currentTab = name
+		updateVisibility()
+	end)
+
+	tabs[name] = btn
+end
+
+for i, name in ipairs(tabNames) do
+	createTab(name, i)
+end
+
+-- Create Input
+local function createInput(labelText, y)
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(0, 120, 0, 25)
+	label.Position = UDim2.new(0, 30, 0, y)
+	label.BackgroundTransparency = 1
+	label.Text = labelText
+	label.Font = Enum.Font.Gotham
+	label.TextSize = 16
+	label.TextColor3 = Color3.fromRGB(200, 200, 255)
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = frame
+
+	local input = Instance.new("TextBox")
+	input.Size = UDim2.new(0, 260, 0, 25)
+	input.Position = UDim2.new(0, 150, 0, y)
+	input.BackgroundColor3 = Color3.fromRGB(50, 50, 80)
+	input.TextColor3 = Color3.new(1, 1, 1)
+	input.Font = Enum.Font.Gotham
+	input.TextSize = 16
+	input.PlaceholderText = "Type here..."
+	input.Text = ""
+	input.ClearTextOnFocus = false
+	input.Parent = frame
+
+	local ic = Instance.new("UICorner", input)
+	ic.CornerRadius = UDim.new(0, 6)
+
+	return input
 end
 
 -- Inputs
-local function createInput(labelText, defaultText, yPos)
-    local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(0, 120, 0, 25)
-    Label.Position = UDim2.new(0, 20, 0, yPos)
-    Label.BackgroundTransparency = 1
-    Label.Text = labelText
-    Label.TextColor3 = Color3.fromRGB(220, 220, 255)
-    Label.Font = Enum.Font.Gotham
-    Label.TextSize = 16
-    Label.TextXAlignment = Enum.TextXAlignment.Left
-    Label.Parent = MainFrame
+local petName = createInput("Pet Name", 90)
+local petWeight = createInput("Pet Weight", 125)
+local petAge = createInput("Pet Age", 160)
 
-    local Box = Instance.new("TextBox")
-    Box.Size = UDim2.new(0, 200, 0, 25)
-    Box.Position = UDim2.new(0, 150, 0, yPos)
-    Box.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
-    Box.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Box.Font = Enum.Font.Gotham
-    Box.TextSize = 16
-    Box.Text = defaultText or ""
-    Box.PlaceholderText = labelText
-    Box.ClearTextOnFocus = false
-    Box.Parent = MainFrame
+local seedName = createInput("Seed Name", 90)
+local eggName = createInput("Egg Name", 90)
 
-    local corner = Instance.new("UICorner", Box)
-    corner.CornerRadius = UDim.new(0, 6)
-
-    return Box
-end
-
-local petNameBox = createInput("Pet", "Dragonfly", 100)
-local petWeightBox = createInput("Pet Weight", "3.8", 135)
-local petAgeBox = createInput("Pet Age", "15", 170)
-
-local seedNameBox = createInput("Seed Name", "Candy Blossom", 100)
-local eggNameBox = createInput("Egg Name", "Night Egg", 100)
-
--- Hide irrelevant fields based on tab
+-- Show/hide based on tab
 function updateVisibility()
-    petNameBox.Visible = currentTab == "Pet"
-    petWeightBox.Visible = currentTab == "Pet"
-    petAgeBox.Visible = currentTab == "Pet"
+	petName.Visible = currentTab == "Pet"
+	petWeight.Visible = currentTab == "Pet"
+	petAge.Visible = currentTab == "Pet"
 
-    seedNameBox.Visible = currentTab == "Seed"
-    eggNameBox.Visible = currentTab == "Egg"
+	seedName.Visible = currentTab == "Seed"
+	eggName.Visible = currentTab == "Egg"
 end
 
 updateVisibility()
 
 -- Spawn Button
-local spawnBtn = Instance.new("TextButton")
-spawnBtn.Size = UDim2.new(0, 140, 0, 35)
-spawnBtn.Position = UDim2.new(0.5, -70, 1, -50)
-spawnBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 160)
-spawnBtn.TextColor3 = Color3.new(1, 1, 1)
-spawnBtn.Font = Enum.Font.GothamBold
-spawnBtn.Text = "Spawn"
-spawnBtn.Parent = MainFrame
+local spawn = Instance.new("TextButton", frame)
+spawn.Size = UDim2.new(0, 160, 0, 35)
+spawn.Position = UDim2.new(0.5, -80, 1, -50)
+spawn.BackgroundColor3 = Color3.fromRGB(0, 190, 160)
+spawn.Text = "Spawn"
+spawn.TextColor3 = Color3.new(1, 1, 1)
+spawn.Font = Enum.Font.GothamBold
+spawn.TextSize = 18
 
-local cornerSpawn = Instance.new("UICorner", spawnBtn)
-cornerSpawn.CornerRadius = UDim.new(0, 8)
+local sCorner = Instance.new("UICorner", spawn)
+sCorner.CornerRadius = UDim.new(0, 8)
 
-spawnBtn.MouseButton1Click:Connect(function()
-    if currentTab == "Pet" then
-        local name = petNameBox.Text
-        local weight = tonumber(petWeightBox.Text)
-        local age = tonumber(petAgeBox.Text)
-        if name and weight and age then
-            Spawner.SpawnPet(name, weight, age)
-        end
-    elseif currentTab == "Seed" then
-        local name = seedNameBox.Text
-        if name and #name > 0 then
-            Spawner.SpawnSeed(name)
-        end
-    elseif currentTab == "Egg" then
-        local name = eggNameBox.Text
-        if name and #name > 0 then
-            Spawner.SpawnEgg(name)
-        end
-    end
+spawn.MouseButton1Click:Connect(function()
+	if currentTab == "Pet" then
+		local name = petName.Text
+		local weight = tonumber(petWeight.Text)
+		local age = tonumber(petAge.Text)
+		if name ~= "" and weight and age then
+			Spawner.SpawnPet(name, weight, age)
+		end
+	elseif currentTab == "Seed" then
+		local name = seedName.Text
+		if name ~= "" then
+			Spawner.SpawnSeed(name)
+		end
+	elseif currentTab == "Egg" then
+		local name = eggName.Text
+		if name ~= "" then
+			Spawner.SpawnEgg(name)
+		end
+	end
 end)
