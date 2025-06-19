@@ -8,28 +8,29 @@ local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "g3zmarSpawner"
 gui.ResetOnSpawn = false
 
--- Toggle visibility with keybind
+-- Toggle Key
 local UserInputService = game:GetService("UserInputService")
 local toggleKey = Enum.KeyCode.K
 
-UserInputService.InputBegan:Connect(function(input, gp)
-	if input.KeyCode == toggleKey and not gp then
-		if gui.Enabled then
-			gui.Enabled = false
-		else
-			gui.Enabled = true
-		end
-	end
-end)
+-- Floating Reopen Button
+local reopenBtn = Instance.new("TextButton", gui)
+reopenBtn.Size = UDim2.new(0, 120, 0, 35)
+reopenBtn.Position = UDim2.new(0, 20, 0.5, -20)
+reopenBtn.BackgroundColor3 = Color3.fromRGB(30, 180, 140)
+reopenBtn.Text = "Open Spawner"
+reopenBtn.TextColor3 = Color3.new(1, 1, 1)
+reopenBtn.Font = Enum.Font.GothamBold
+reopenBtn.TextSize = 14
+reopenBtn.Visible = false
+Instance.new("UICorner", reopenBtn).CornerRadius = UDim.new(0, 8)
 
--- Frame
+-- Main Frame
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 460, 0, 330)
 frame.Position = UDim2.new(0.5, -230, 0.5, -165)
 frame.BackgroundColor3 = Color3.fromRGB(35, 35, 60)
 frame.Active = true
 frame.Draggable = true
-
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
 -- Close Button
@@ -43,8 +44,16 @@ closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.TextSize = 16
 Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(1, 0)
 
+-- Close button functionality
 closeBtn.MouseButton1Click:Connect(function()
-	gui.Enabled = false
+	frame.Visible = false
+	reopenBtn.Visible = true
+end)
+
+-- Reopen button functionality
+reopenBtn.MouseButton1Click:Connect(function()
+	frame.Visible = true
+	reopenBtn.Visible = false
 end)
 
 -- Title
@@ -169,6 +178,19 @@ spawnBtn.MouseButton1Click:Connect(function()
 		local e = eggName.Text
 		if e ~= "" then
 			Spawner.SpawnEgg(e)
+		end
+	end
+end)
+
+-- Toggle with "K"
+UserInputService.InputBegan:Connect(function(input, gp)
+	if input.KeyCode == toggleKey and not gp then
+		if frame.Visible then
+			frame.Visible = false
+			reopenBtn.Visible = true
+		else
+			frame.Visible = true
+			reopenBtn.Visible = false
 		end
 	end
 end)
