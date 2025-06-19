@@ -8,6 +8,20 @@ local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "g3zmarSpawner"
 gui.ResetOnSpawn = false
 
+-- Toggle visibility with keybind
+local UserInputService = game:GetService("UserInputService")
+local toggleKey = Enum.KeyCode.K
+
+UserInputService.InputBegan:Connect(function(input, gp)
+	if input.KeyCode == toggleKey and not gp then
+		if gui.Enabled then
+			gui.Enabled = false
+		else
+			gui.Enabled = true
+		end
+	end
+end)
+
 -- Frame
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 460, 0, 330)
@@ -18,14 +32,31 @@ frame.Draggable = true
 
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
+-- Close Button
+local closeBtn = Instance.new("TextButton", frame)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.TextSize = 16
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(1, 0)
+
+closeBtn.MouseButton1Click:Connect(function()
+	gui.Enabled = false
+end)
+
 -- Title
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, -40, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "g3zmar OP Script Spawner"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 22
 title.TextColor3 = Color3.fromRGB(140, 255, 255)
+title.TextXAlignment = Enum.TextXAlignment.Left
 
 -- Tabs
 local currentTab = "Pet"
