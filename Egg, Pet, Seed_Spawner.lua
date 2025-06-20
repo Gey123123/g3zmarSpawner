@@ -1,48 +1,88 @@
--- Grow a Garden Full Spawner UI with All Pets, Seeds, Eggs
+-- Grow a Garden Full Visual Spawner UI with All Pets, Seeds, Eggs
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 local gui = player:WaitForChild("PlayerGui")
-local Remote = ReplicatedStorage:FindFirstChild("RemoteEvent") or ReplicatedStorage:FindFirstChild("Remotes")
 
--- ✅ Spawner Functions
+-- ✅ Visual Spawner Functions
 local Spawner = {}
-function Spawner.SpawnPet(name)
-    Remote:FireServer("SpawnPet", {PetName = name, KG = 1, Age = 1})
+
+function Spawner.VisualPet(name)
+    local model = Instance.new("Part")
+    model.Size = Vector3.new(2.5, 2.5, 2.5)
+    model.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 3, -4)
+    model.Anchored = true
+    model.Name = name
+    model.BrickColor = BrickColor.new("Bright red")
+    model.Shape = Enum.PartType.Block
+    model.TopSurface = Enum.SurfaceType.Smooth
+    model.BottomSurface = Enum.SurfaceType.Smooth
+    model.Parent = workspace
+
+    local tag = Instance.new("BillboardGui", model)
+    tag.Size = UDim2.new(0, 100, 0, 30)
+    tag.AlwaysOnTop = true
+    local label = Instance.new("TextLabel", tag)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Text = name
+    label.TextScaled = true
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.new(1, 1, 1)
 end
-function Spawner.SpawnSeed(name)
-    Remote:FireServer("SpawnSeed", name)
+
+function Spawner.VisualEgg(name)
+    local model = Instance.new("Part")
+    model.Size = Vector3.new(2, 2, 2)
+    model.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 3, -3)
+    model.Anchored = true
+    model.Name = name
+    model.BrickColor = BrickColor.Yellow()
+    model.Shape = Enum.PartType.Ball
+    model.TopSurface = Enum.SurfaceType.Smooth
+    model.BottomSurface = Enum.SurfaceType.Smooth
+    model.Parent = workspace
+
+    local tag = Instance.new("BillboardGui", model)
+    tag.Size = UDim2.new(0, 100, 0, 30)
+    tag.AlwaysOnTop = true
+    local label = Instance.new("TextLabel", tag)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Text = name
+    label.TextScaled = true
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.new(1, 1, 1)
 end
-function Spawner.SpawnEgg(name)
-    Remote:FireServer("SpawnEgg", name)
+
+function Spawner.VisualSeed(name)
+    local model = Instance.new("Part")
+    model.Size = Vector3.new(1.5, 1.5, 1.5)
+    model.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 3, -2)
+    model.Anchored = true
+    model.Name = name
+    model.BrickColor = BrickColor.Green()
+    model.Shape = Enum.PartType.Cylinder
+    model.Orientation = Vector3.new(0, 0, 90)
+    model.TopSurface = Enum.SurfaceType.Smooth
+    model.BottomSurface = Enum.SurfaceType.Smooth
+    model.Parent = workspace
+
+    local tag = Instance.new("BillboardGui", model)
+    tag.Size = UDim2.new(0, 100, 0, 30)
+    tag.AlwaysOnTop = true
+    local label = Instance.new("TextLabel", tag)
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Text = name
+    label.TextScaled = true
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.new(1, 1, 1)
 end
 
 -- ✅ Lists
-local pets = {
-    "Fox", "Raccoon", "Deer", "Bunny", "Black Bunny", "Golden Lab", "Dog", "Cat",
-    "Chicken", "Spotted Deer", "Monkey", "Pig", "Rooster", "Cow", "Polar Bear",
-    "Sea Otter", "Silver Monkey", "Turtle", "Brown Mouse", "Grey Mouse",
-    "Caterpillar", "Giant Ant", "Snail", "Praying Mantis", "Dragonfly",
-    "Blood Hedgehog", "Blood Kiwi", "Blood Owl", "Bee", "Honey Bee", "Bear Bee",
-    "Petal Bee", "Queen Bee", "Disco Bee", "Butterfly", "Moth", "Tarantula Hawk",
-    "Echo Frog", "Frog", "Night Owl", "Hedgehog", "Cooked Owl", "Red Fox",
-    "Orange Tabby", "Squirrel", "Wasp", "Pack Bee", "Mole", "Night Owl"
-}
+local pets = { "Fox", "Raccoon", "Deer", "Bunny", "Black Bunny", "Golden Lab", "Dog", "Cat", "Chicken", "Spotted Deer", "Monkey", "Pig", "Rooster", "Cow", "Polar Bear", "Sea Otter", "Silver Monkey", "Turtle", "Brown Mouse", "Grey Mouse", "Caterpillar", "Giant Ant", "Snail", "Praying Mantis", "Dragonfly", "Blood Hedgehog", "Blood Kiwi", "Blood Owl", "Bee", "Honey Bee", "Bear Bee", "Petal Bee", "Queen Bee", "Disco Bee", "Butterfly", "Moth", "Tarantula Hawk", "Echo Frog", "Frog", "Night Owl", "Hedgehog", "Cooked Owl", "Red Fox", "Orange Tabby", "Squirrel", "Wasp", "Pack Bee", "Mole", "Night Owl" }
 
-local seeds = {
-    "Carrot", "Strawberry", "Blueberry", "Orange Tulip", "Tomato", "Daffodil",
-    "Corn", "Watermelon", "Pumpkin", "Apple", "Bamboo", "Coconut", "Cactus",
-    "Dragon Fruit", "Mango", "Grape", "Mushroom", "Pepper", "Cacao",
-    "Beanstalk", "Ember Lily", "Sugar Apple", "Pear", "Peach", "Raspberry",
-    "Pineapple", "Dragon Pepper", "Cocovine", "Bendboo", "Suncoil", "Violet Corn",
-    "Bee Balm", "Succulent", "Crocus", "Lavender", "Moon Blossom", "Mint",
-    "Moonflower", "Nightshade", "Glowshroom", "Moonglow", "Starfruit"
-}
+local seeds = { "Carrot", "Strawberry", "Blueberry", "Orange Tulip", "Tomato", "Daffodil", "Corn", "Watermelon", "Pumpkin", "Apple", "Bamboo", "Coconut", "Cactus", "Dragon Fruit", "Mango", "Grape", "Mushroom", "Pepper", "Cacao", "Beanstalk", "Ember Lily", "Sugar Apple", "Pear", "Peach", "Raspberry", "Pineapple", "Dragon Pepper", "Cocovine", "Bendboo", "Suncoil", "Violet Corn", "Bee Balm", "Succulent", "Crocus", "Lavender", "Moon Blossom", "Mint", "Moonflower", "Nightshade", "Glowshroom", "Moonglow", "Starfruit" }
 
-local eggs = {
-    "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg",
-    "Mythical Egg", "Bug Egg", "Anti Bee Egg", "Night Egg", "Bee Egg", "Blood Egg"
-}
+local eggs = { "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg", "Mythical Egg", "Bug Egg", "Anti Bee Egg", "Night Egg", "Bee Egg", "Blood Egg" }
 
 -- ✅ UI Setup
 local ScreenGui = Instance.new("ScreenGui", gui)
@@ -61,19 +101,24 @@ local function makeButton(text, posY, callback)
     btn.MouseButton1Click:Connect(callback)
 end
 
--- ✅ Add Buttons
+-- ✅ Add Buttons for Visual Spawning
 local spacing = 0.035
 local y = 0.05
-for _, data in ipairs({
-    {pets, Spawner.SpawnPet},
-    {seeds, Spawner.SpawnSeed},
-    {eggs, Spawner.SpawnEgg}
-}) do
-    for _, name in ipairs(data[1]) do
-        makeButton("Spawn " .. name, y, function()
-            data[2](name)
-        end)
-        y = y + spacing
-        if y > 0.95 then break end
-    end
+for _, name in ipairs(pets) do
+    makeButton("Spawn Pet: " .. name, y, function()
+        Spawner.VisualPet(name)
+    end)
+    y = y + spacing
+end
+for _, name in ipairs(seeds) do
+    makeButton("Spawn Seed: " .. name, y, function()
+        Spawner.VisualSeed(name)
+    end)
+    y = y + spacing
+end
+for _, name in ipairs(eggs) do
+    makeButton("Spawn Egg: " .. name, y, function()
+        Spawner.VisualEgg(name)
+    end)
+    y = y + spacing
 end
