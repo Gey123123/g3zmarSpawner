@@ -1,5 +1,7 @@
-local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/DeltaGay/femboy/refs/heads/main/GardenSpawner.lua"))
+-- Load the spawner and execute it
+local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/DeltaGay/femboy/refs/heads/main/GardenSpawner.lua"))()
 
+-- Destroy previous GUI if exists
 pcall(function()
 	game.CoreGui:FindFirstChild("g3zmarSpawner"):Destroy()
 end)
